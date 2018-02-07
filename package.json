@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start":
-      "browser-sync start --server --files './dist/*.css, ./dist/*.html, ./dist/*.js, !node_modules/**/*' --directory --port 7777 --browser 'google chrome'"
+      "browser-sync start --server --files './www/*.css, ./www/*.html, ./www/dist/*.js, !node_modules/**/*' --port 7777 --directory --browser 'google chrome'"
   },
   "author": "",
   "license": "ISC",

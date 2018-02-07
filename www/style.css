@@ -1,0 +1,33 @@
+html,
+body {
+  box-sizing: border-box;
+  height: 100%;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  margin: 0;
+}
+body {
+  font-family: "Barlow", sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 400;
+}
+
+#text {
+  position: absolute;
+  pointer-events: node;
+  user-select: none;
+}
+#ball {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: red;
+  border-radius: 25px;
+}
