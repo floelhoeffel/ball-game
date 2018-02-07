@@ -1,16 +1,18 @@
-import * as ball from "./ball.js"
+import * as ball from "./ball"
 
 let lastTime = performance.now()
 
 const world = {
-  w: window.innerWidth,
-  h: window.innerHeight,
+  width: window.innerWidth,
+  height: window.innerHeight,
   acceleration: 0.0012
 }
 
-function update(timestamp) {
+function update(timestamp: number) {
   let deltaTime = timestamp - lastTime
   lastTime = timestamp
+
+  if (ball.isDragged) return
 
   ball.setPosition(
     ball.position +
@@ -20,8 +22,8 @@ function update(timestamp) {
   ball.setVelocity(ball.velocity + deltaTime * world.acceleration)
 
   // If ball would bleed out of screen
-  if (ball.position + ball.height >= world.h) {
-    ball.setPosition(world.h - ball.height)
+  if (ball.position + ball.height >= world.height) {
+    ball.setPosition(world.height - ball.height)
     ball.setVelocity(ball.velocity * -0.7)
 
     // If ball too slow, stop render loop
