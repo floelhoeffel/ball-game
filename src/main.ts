@@ -4,4 +4,4 @@ import * as input from "./input"
 engine.init()
 input.activate()
 
-console.log("foo2")
+console.log("foo3")

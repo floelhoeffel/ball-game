@@ -6,7 +6,7 @@ export function activate() {
     if (ball.isDragged) {
       console.log("ballMove")
 
-      ball.setPosition(event.clientY)
+      ball.setPositionY(event.clientY)
       ball.render()
     }
   })

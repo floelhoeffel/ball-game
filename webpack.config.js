@@ -1,9 +1,8 @@
-var HtmlWebpackPlugin = require("html-webpack-plugin")
 module.exports = {
   entry: "./src/main.ts",
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist"
+    path: __dirname + "/www/dist"
   },
 
   // Enable sourcemaps for debugging webpack's output.
