@@ -73,13 +73,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ballElement = document.body.appendChild(document.createElement("div"));
 exports.ballElement = ballElement;
 ballElement.setAttribute("id", "ball");
+// ballElement.style.transform = "translate(50%, 20%)"
 var height = ballElement.getBoundingClientRect().height;
 exports.height = height;
 var width = ballElement.getBoundingClientRect().width;
 exports.width = width;
 var velocityY = 0;
 exports.velocityY = velocityY;
-var velocityX = 0.4;
+var velocityX = -1 + Math.random() * 2;
 exports.velocityX = velocityX;
 var positionY = ballElement.getBoundingClientRect().top;
 exports.positionY = positionY;
@@ -144,6 +145,7 @@ var world = {
     acceleration: 0.0012,
     friction: 0.999
 };
+exports.world = world;
 function update(timestamp) {
     var deltaTime = timestamp - lastTime;
     lastTime = timestamp;
@@ -160,8 +162,8 @@ function update(timestamp) {
         ball.setVelocityY(ball.velocityY * -0.7);
         // If ball too slow, stop render loop
         if (Math.abs(ball.velocityY) < 0.05) {
-            world.acceleration = 0;
-            ball.setVelocityY(0);
+            //world.acceleration = 0
+            //ball.setVelocityY(0)
             console.log("killed");
             return;
         }
@@ -175,8 +177,15 @@ function update(timestamp) {
     ball.render();
     window.requestAnimationFrame(update);
 }
+function throwBall() {
+    lastTime = performance.now();
+    update(lastTime);
+}
+exports.throwBall = throwBall;
 function init() {
     console.log("init");
+    ball.setPositionX(world.width * 0.5);
+    ball.setPositionY(world.height * 0.2);
     update(lastTime);
 }
 exports.init = init;
@@ -190,12 +199,14 @@ exports.init = init;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ball = __webpack_require__(0);
+var engine = __webpack_require__(2);
 function activate() {
     document.body.addEventListener("mousemove", function (event) {
         //console.log(event)
         if (ball.isDragged) {
             console.log("ballMove");
-            ball.setPositionY(event.clientY);
+            ball.setPositionY(event.clientY - ball.height / 2);
+            ball.setPositionX(event.clientX - ball.width / 2);
             ball.render();
         }
     });
@@ -205,6 +216,7 @@ function activate() {
     });
     document.body.addEventListener("mouseup", function (event) {
         ball.setDragged(false);
+        engine.throwBall();
     });
 }
 exports.activate = activate;

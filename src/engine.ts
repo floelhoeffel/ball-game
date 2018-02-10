@@ -31,8 +31,8 @@ function update(timestamp: number) {
 
     // If ball too slow, stop render loop
     if (Math.abs(ball.velocityY) < 0.05) {
-      world.acceleration = 0
-      ball.setVelocityY(0)
+      //world.acceleration = 0
+      //ball.setVelocityY(0)
       console.log("killed")
       return
     }
@@ -50,8 +50,18 @@ function update(timestamp: number) {
   window.requestAnimationFrame(update)
 }
 
-export function init() {
+function throwBall() {
+  lastTime = performance.now()
+  update(lastTime)
+}
+
+function init() {
   console.log("init")
+
+  ball.setPositionX(world.width * 0.5)
+  ball.setPositionY(world.height * 0.2)
 
   update(lastTime)
 }
+
+export { init, world, throwBall }

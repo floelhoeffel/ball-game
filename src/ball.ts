@@ -1,11 +1,12 @@
 const ballElement = document.body.appendChild(document.createElement("div"))
 ballElement.setAttribute("id", "ball")
+// ballElement.style.transform = "translate(50%, 20%)"
 
 const height: number = ballElement.getBoundingClientRect().height
 const width: number = ballElement.getBoundingClientRect().width
 
 let velocityY: number = 0
-let velocityX: number = 0.4
+let velocityX: number = -1 + Math.random() * 2
 let positionY: number = ballElement.getBoundingClientRect().top
 let positionX: number = ballElement.getBoundingClientRect().left
 let isDragged: boolean = false
