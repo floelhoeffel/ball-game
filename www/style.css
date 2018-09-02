@@ -30,4 +30,5 @@ h3 {
   height: 50px;
   background: red;
   border-radius: 25px;
+  cursor: pointer;
 }

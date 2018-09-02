@@ -12,6 +12,7 @@ interface World {
 
 export class Engine {
   private lastTime: number
+  deltaTime: number
 
   world: World = {
     width: window.innerWidth,
@@ -37,7 +38,7 @@ export class Engine {
     // console.log(`engine.update`)
     // console.log(`engine.update lastTime ${this.lastTime}`)
 
-    let deltaTime = timestamp - this.lastTime
+    this.deltaTime = timestamp - this.lastTime
     this.lastTime = timestamp
 
     // If dragged, end render loop
@@ -56,12 +57,13 @@ export class Engine {
     if (Math.abs(this.ball.velY) > 0) {
       this.ball.posY =
         this.ball.posY +
-        deltaTime * (this.ball.velY + (deltaTime * this.world.acceleration) / 2)
+        this.deltaTime *
+          (this.ball.velY + (this.deltaTime * this.world.acceleration) / 2)
     }
 
     // Only move if vel > 0
     if (Math.abs(this.ball.velX) > 0) {
-      this.ball.posX = this.ball.posX + deltaTime * this.ball.velX
+      this.ball.posX = this.ball.posX + this.deltaTime * this.ball.velX
     }
 
     // Friction
@@ -76,7 +78,7 @@ export class Engine {
 
     // Gravity, only if not laying on the ground
     if (this.ball.posY !== this.world.height - this.ball.height) {
-      this.ball.velY = this.ball.velY + deltaTime * this.world.acceleration
+      this.ball.velY = this.ball.velY + this.deltaTime * this.world.acceleration
     }
 
     // Bottom bounds
@@ -119,10 +121,12 @@ export class Engine {
 
     this.ball.render()
 
-    window.requestAnimationFrame(this.update.bind(this))
+    window.requestAnimationFrame(time => {
+      this.update(time)
+    })
   }
 
-  throwBall() {
+  resume() {
     this.lastTime = performance.now()
     this.update(this.lastTime)
   }
