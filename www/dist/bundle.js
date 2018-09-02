@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,50 +70,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ballElement = document.body.appendChild(document.createElement("div"));
-exports.ballElement = ballElement;
-ballElement.setAttribute("id", "ball");
-// ballElement.style.transform = "translate(50%, 20%)"
-var height = ballElement.getBoundingClientRect().height;
-exports.height = height;
-var width = ballElement.getBoundingClientRect().width;
-exports.width = width;
-var velocityY = 0;
-exports.velocityY = velocityY;
-var velocityX = -1 + Math.random() * 2;
-exports.velocityX = velocityX;
-var positionY = ballElement.getBoundingClientRect().top;
-exports.positionY = positionY;
-var positionX = ballElement.getBoundingClientRect().left;
-exports.positionX = positionX;
-var isDragged = false;
-exports.isDragged = isDragged;
-function setDragged(value) {
-    exports.isDragged = isDragged = value;
-}
-exports.setDragged = setDragged;
-function setPositionX(value) {
-    exports.positionX = positionX = value;
-}
-exports.setPositionX = setPositionX;
-function setPositionY(value) {
-    exports.positionY = positionY = value;
-}
-exports.setPositionY = setPositionY;
-function setVelocityX(value) {
-    exports.velocityX = velocityX = value;
-}
-exports.setVelocityX = setVelocityX;
-function setVelocityY(value) {
-    exports.velocityY = velocityY = value;
-}
-exports.setVelocityY = setVelocityY;
-function render() {
-    console.log("x", positionX, "y", positionY);
-    ballElement.style.transform =
-        "translateY(" + positionY + "px) translateX(" + positionX + "px)";
-}
-exports.render = render;
+var ball_1 = __webpack_require__(1);
+var engine_1 = __webpack_require__(2);
+var input_1 = __webpack_require__(3);
+var ball = new ball_1.Ball(document.getElementById("ball"));
+var engine = new engine_1.Engine(ball);
+var input = new input_1.Input(engine, ball);
 
 
 /***/ }),
@@ -123,11 +85,60 @@ exports.render = render;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var engine = __webpack_require__(2);
-var input = __webpack_require__(3);
-engine.init();
-input.activate();
-console.log("foo3");
+var Ball = /** @class */ (function () {
+    function Ball(element) {
+        this.velX = -1 + Math.random() * 2;
+        this.velY = 0;
+        this.isDragged = false;
+        this.element = element;
+        var boundingRect = this.element.getBoundingClientRect();
+        // ballElement.setAttribute("id", "ball")
+        this.height = boundingRect.height;
+        this.width = boundingRect.width;
+        this.posX = boundingRect.top;
+        this.posY = boundingRect.left;
+    }
+    Ball.prototype.render = function () {
+        //console.log("x", positionX, "y", positionY)
+        this.element.style.transform =
+            "translateY(" + this.posY + "px) translateX(" + this.posX + "px)";
+    };
+    return Ball;
+}());
+exports.Ball = Ball;
+//ballElement.style.transform = "translate(50%, 20%)"
+// function setDragged(value: boolean) {
+//   isDragged = value
+// }
+// function setPositionX(value: number) {
+//   positionX = value
+// }
+// function setPositionY(value: number) {
+//   positionY = value
+// }
+// function setVelocityX(value: number) {
+//   velocityX = value
+// }
+// function setVelocityY(value: number) {
+//   velocityY = value
+// }
+// function
+// export {
+//   ballElement,
+//   width,
+//   height,
+//   velocityY,
+//   velocityX,
+//   positionY,
+//   positionX,
+//   isDragged,
+//   setDragged,
+//   setPositionY,
+//   setPositionX,
+//   setVelocityY,
+//   setVelocityX,
+//   render
+// }
 
 
 /***/ }),
@@ -137,58 +148,63 @@ console.log("foo3");
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ball = __webpack_require__(0);
-var lastTime = performance.now();
-var world = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    acceleration: 0.0012,
-    friction: 0.999
-};
-exports.world = world;
-function update(timestamp) {
-    var deltaTime = timestamp - lastTime;
-    lastTime = timestamp;
-    if (ball.isDragged)
-        return;
-    ball.setPositionY(ball.positionY +
-        deltaTime * (ball.velocityY + deltaTime * world.acceleration / 2));
-    ball.setPositionX(ball.positionX + deltaTime * ball.velocityX);
-    ball.setVelocityX(ball.velocityX * world.friction);
-    ball.setVelocityY(ball.velocityY + deltaTime * world.acceleration);
-    // If ball would bleed out of screen
-    if (ball.positionY + ball.height >= world.height) {
-        ball.setPositionY(world.height - ball.height);
-        ball.setVelocityY(ball.velocityY * -0.7);
-        // If ball too slow, stop render loop
-        if (Math.abs(ball.velocityY) < 0.05) {
-            //world.acceleration = 0
-            //ball.setVelocityY(0)
-            console.log("killed");
+var Engine = /** @class */ (function () {
+    function Engine(ball) {
+        this.ball = ball;
+        this.world = {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            acceleration: 0.0012,
+            friction: 0.999
+        };
+        console.log("init engine");
+        this.lastTime = performance.now();
+        this.ball.posX = this.world.width * 0.5;
+        this.ball.posY = this.world.height * 0.2;
+        this.update(this.lastTime);
+    }
+    Engine.prototype.update = function (timestamp) {
+        // console.log(`engine.update`)
+        // console.log(`engine.update lastTime ${this.lastTime}`)
+        var deltaTime = timestamp - this.lastTime;
+        this.lastTime = timestamp;
+        if (this.ball.isDragged) {
             return;
         }
-    }
-    if (ball.positionX + ball.width > world.width) {
-        ball.setVelocityX(ball.velocityX * -1);
-    }
-    if (ball.positionX <= 0) {
-        ball.setVelocityX(ball.velocityX * -1);
-    }
-    ball.render();
-    window.requestAnimationFrame(update);
-}
-function throwBall() {
-    lastTime = performance.now();
-    update(lastTime);
-}
-exports.throwBall = throwBall;
-function init() {
-    console.log("init");
-    ball.setPositionX(world.width * 0.5);
-    ball.setPositionY(world.height * 0.2);
-    update(lastTime);
-}
-exports.init = init;
+        this.ball.posY =
+            this.ball.posY +
+                deltaTime * (this.ball.velY + (deltaTime * this.world.acceleration) / 2);
+        this.ball.posX = this.ball.posX + deltaTime * this.ball.velX;
+        this.ball.velX = this.ball.velX * this.world.friction;
+        this.ball.velY = this.ball.velY + deltaTime * this.world.acceleration;
+        // If ball would bleed out of screen
+        if (this.ball.posY + this.ball.height >= this.world.height) {
+            this.ball.posY = this.world.height - this.ball.height;
+            this.ball.velY = this.ball.velY * -0.7;
+            // If ball too slow, stop render loop
+            if (Math.abs(this.ball.velY) < 0.05) {
+                //world.acceleration = 0
+                //this.ball.setVelocityY(0)
+                console.log("killed");
+                return;
+            }
+        }
+        if (this.ball.posX + this.ball.width > this.world.width) {
+            this.ball.velX = this.ball.velX * -1;
+        }
+        if (this.ball.posX <= 0) {
+            this.ball.velX = this.ball.velX * -1;
+        }
+        this.ball.render();
+        window.requestAnimationFrame(this.update.bind(this));
+    };
+    Engine.prototype.throwBall = function () {
+        this.lastTime = performance.now();
+        this.update(this.lastTime);
+    };
+    return Engine;
+}());
+exports.Engine = Engine;
 
 
 /***/ }),
@@ -198,28 +214,33 @@ exports.init = init;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ball = __webpack_require__(0);
-var engine = __webpack_require__(2);
-function activate() {
-    document.body.addEventListener("mousemove", function (event) {
-        //console.log(event)
-        if (ball.isDragged) {
-            console.log("ballMove");
-            ball.setPositionY(event.clientY - ball.height / 2);
-            ball.setPositionX(event.clientX - ball.width / 2);
-            ball.render();
-        }
-    });
-    ball.ballElement.addEventListener("mousedown", function (event) {
-        console.log("ball");
-        ball.setDragged(true);
-    });
-    document.body.addEventListener("mouseup", function (event) {
-        ball.setDragged(false);
-        engine.throwBall();
-    });
-}
-exports.activate = activate;
+var Input = /** @class */ (function () {
+    function Input(engine, ball) {
+        this.engine = engine;
+        this.ball = ball;
+        var lastBallX = 0;
+        var lastBallY = 0;
+        document.body.addEventListener("mousemove", function (event) {
+            if (ball.isDragged) {
+                console.log("ballMove");
+                console.log("oldX " + ball.posX + ", newX " + (event.clientX - ball.width / 2));
+                ball.posY = event.clientY - ball.height / 2;
+                ball.posX = event.clientX - ball.width / 2;
+                ball.render();
+            }
+        });
+        ball.element.addEventListener("mousedown", function (event) {
+            console.log("ball");
+            ball.isDragged = true;
+        });
+        document.body.addEventListener("mouseup", function (event) {
+            ball.isDragged = false;
+            engine.throwBall();
+        });
+    }
+    return Input;
+}());
+exports.Input = Input;
 
 
 /***/ })

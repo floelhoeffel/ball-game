@@ -1,26 +1,31 @@
-import * as ball from "./ball"
-import * as engine from "./engine"
+import { Ball } from "./ball"
+import { Engine } from "./engine"
 
-function activate() {
-  document.body.addEventListener("mousemove", event => {
-    //console.log(event)
-    if (ball.isDragged) {
-      console.log("ballMove")
+export class Input {
+  constructor(private engine: Engine, private ball: Ball) {
+    let lastBallX = 0
+    let lastBallY = 0
 
-      ball.setPositionY(event.clientY - ball.height / 2)
-      ball.setPositionX(event.clientX - ball.width / 2)
-      ball.render()
-    }
-  })
+    document.body.addEventListener("mousemove", event => {
+      if (ball.isDragged) {
+        console.log("ballMove")
 
-  ball.ballElement.addEventListener("mousedown", event => {
-    console.log("ball")
-    ball.setDragged(true)
-  })
-  document.body.addEventListener("mouseup", event => {
-    ball.setDragged(false)
-    engine.throwBall()
-  })
+        console.log(`oldX ${ball.posX}, newX ${event.clientX - ball.width / 2}`)
+
+        ball.posY = event.clientY - ball.height / 2
+        ball.posX = event.clientX - ball.width / 2
+
+        ball.render()
+      }
+    })
+
+    ball.element.addEventListener("mousedown", event => {
+      console.log("ball")
+      ball.isDragged = true
+    })
+    document.body.addEventListener("mouseup", event => {
+      ball.isDragged = false
+      engine.throwBall()
+    })
+  }
 }
-
-export { activate }

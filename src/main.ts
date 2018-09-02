@@ -1,7 +1,7 @@
-import * as engine from "./engine"
-import * as input from "./input"
+import { Ball } from "./ball"
+import { Engine } from "./engine"
+import { Input } from "./input"
 
-engine.init()
-input.activate()
-
-console.log("foo3")
+let ball: Ball = new Ball(document.getElementById("ball"))
+let engine: Engine = new Engine(ball)
+let input: Input = new Input(engine, ball)

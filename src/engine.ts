@@ -1,67 +1,80 @@
-import * as ball from "./ball"
+import { Ball } from "./ball"
 
-let lastTime = performance.now()
-
-const world = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-  acceleration: 0.0012,
-  friction: 0.999
+interface World {
+  width: number
+  height: number
+  acceleration: number
+  friction: number
 }
 
-function update(timestamp: number) {
-  let deltaTime = timestamp - lastTime
-  lastTime = timestamp
+export class Engine {
+  private lastTime: number
 
-  if (ball.isDragged) return
+  world: World = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    acceleration: 0.0012,
+    friction: 0.999
+  }
+  constructor(private ball: Ball) {
+    console.log("init engine")
 
-  ball.setPositionY(
-    ball.positionY +
-      deltaTime * (ball.velocityY + deltaTime * world.acceleration / 2)
-  )
-  ball.setPositionX(ball.positionX + deltaTime * ball.velocityX)
+    this.lastTime = performance.now()
 
-  ball.setVelocityX(ball.velocityX * world.friction)
-  ball.setVelocityY(ball.velocityY + deltaTime * world.acceleration)
+    this.ball.posX = this.world.width * 0.5
+    this.ball.posY = this.world.height * 0.2
 
-  // If ball would bleed out of screen
-  if (ball.positionY + ball.height >= world.height) {
-    ball.setPositionY(world.height - ball.height)
-    ball.setVelocityY(ball.velocityY * -0.7)
+    this.update(this.lastTime)
+  }
 
-    // If ball too slow, stop render loop
-    if (Math.abs(ball.velocityY) < 0.05) {
-      //world.acceleration = 0
-      //ball.setVelocityY(0)
-      console.log("killed")
+  private update(timestamp: number) {
+    // console.log(`engine.update`)
+    // console.log(`engine.update lastTime ${this.lastTime}`)
+
+    let deltaTime = timestamp - this.lastTime
+    this.lastTime = timestamp
+
+    if (this.ball.isDragged) {
       return
     }
+
+    this.ball.posY =
+      this.ball.posY +
+      deltaTime * (this.ball.velY + (deltaTime * this.world.acceleration) / 2)
+
+    this.ball.posX = this.ball.posX + deltaTime * this.ball.velX
+
+    this.ball.velX = this.ball.velX * this.world.friction
+    this.ball.velY = this.ball.velY + deltaTime * this.world.acceleration
+
+    // If ball would bleed out of screen
+    if (this.ball.posY + this.ball.height >= this.world.height) {
+      this.ball.posY = this.world.height - this.ball.height
+      this.ball.velY = this.ball.velY * -0.7
+
+      // If ball too slow, stop render loop
+      if (Math.abs(this.ball.velY) < 0.05) {
+        //world.acceleration = 0
+        //this.ball.setVelocityY(0)
+        console.log("killed")
+        return
+      }
+    }
+
+    if (this.ball.posX + this.ball.width > this.world.width) {
+      this.ball.velX = this.ball.velX * -1
+    }
+    if (this.ball.posX <= 0) {
+      this.ball.velX = this.ball.velX * -1
+    }
+
+    this.ball.render()
+
+    window.requestAnimationFrame(this.update.bind(this))
   }
 
-  if (ball.positionX + ball.width > world.width) {
-    ball.setVelocityX(ball.velocityX * -1)
+  throwBall() {
+    this.lastTime = performance.now()
+    this.update(this.lastTime)
   }
-  if (ball.positionX <= 0) {
-    ball.setVelocityX(ball.velocityX * -1)
-  }
-
-  ball.render()
-
-  window.requestAnimationFrame(update)
 }
-
-function throwBall() {
-  lastTime = performance.now()
-  update(lastTime)
-}
-
-function init() {
-  console.log("init")
-
-  ball.setPositionX(world.width * 0.5)
-  ball.setPositionY(world.height * 0.2)
-
-  update(lastTime)
-}
-
-export { init, world, throwBall }

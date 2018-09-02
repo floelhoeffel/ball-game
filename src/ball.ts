@@ -1,53 +1,72 @@
-const ballElement = document.body.appendChild(document.createElement("div"))
-ballElement.setAttribute("id", "ball")
-// ballElement.style.transform = "translate(50%, 20%)"
+export class Ball {
+  element: HTMLElement
 
-const height: number = ballElement.getBoundingClientRect().height
-const width: number = ballElement.getBoundingClientRect().width
+  width: number
+  height: number
 
-let velocityY: number = 0
-let velocityX: number = -1 + Math.random() * 2
-let positionY: number = ballElement.getBoundingClientRect().top
-let positionX: number = ballElement.getBoundingClientRect().left
-let isDragged: boolean = false
+  velX: number = -1 + Math.random() * 2
+  velY: number = 0
 
-function setDragged(value: boolean) {
-  isDragged = value
-}
-function setPositionX(value: number) {
-  positionX = value
-}
-function setPositionY(value: number) {
-  positionY = value
-}
+  posX: number
+  posY: number
 
-function setVelocityX(value: number) {
-  velocityX = value
-}
-function setVelocityY(value: number) {
-  velocityY = value
-}
+  isDragged: boolean = false
 
-function render() {
-  console.log("x", positionX, "y", positionY)
+  constructor(element: HTMLElement) {
+    this.element = element
+    let boundingRect = this.element.getBoundingClientRect()
 
-  ballElement.style.transform =
-    "translateY(" + positionY + "px) translateX(" + positionX + "px)"
+    // ballElement.setAttribute("id", "ball")
+
+    this.height = boundingRect.height
+    this.width = boundingRect.width
+    this.posX = boundingRect.top
+    this.posY = boundingRect.left
+  }
+  render() {
+    //console.log("x", positionX, "y", positionY)
+
+    this.element.style.transform =
+      "translateY(" + this.posY + "px) translateX(" + this.posX + "px)"
+  }
 }
 
-export {
-  ballElement,
-  width,
-  height,
-  velocityY,
-  velocityX,
-  positionY,
-  positionX,
-  isDragged,
-  setDragged,
-  setPositionY,
-  setPositionX,
-  setVelocityY,
-  setVelocityX,
-  render
-}
+
+
+//ballElement.style.transform = "translate(50%, 20%)"
+
+// function setDragged(value: boolean) {
+//   isDragged = value
+// }
+// function setPositionX(value: number) {
+//   positionX = value
+// }
+// function setPositionY(value: number) {
+//   positionY = value
+// }
+
+// function setVelocityX(value: number) {
+//   velocityX = value
+// }
+// function setVelocityY(value: number) {
+//   velocityY = value
+// }
+
+// function
+
+// export {
+//   ballElement,
+//   width,
+//   height,
+//   velocityY,
+//   velocityX,
+//   positionY,
+//   positionX,
+//   isDragged,
+//   setDragged,
+//   setPositionY,
+//   setPositionX,
+//   setVelocityY,
+//   setVelocityX,
+//   render
+// }
