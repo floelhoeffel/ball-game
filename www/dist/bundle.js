@@ -88,7 +88,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Ball = /** @class */ (function () {
     function Ball(element) {
         this.velX = -1 + Math.random() * 2;
-        this.velY = 0;
+        this.velY = -2 + Math.random() * 4;
         this.isDragged = false;
         this.element = element;
         var boundingRect = this.element.getBoundingClientRect();
@@ -188,6 +188,10 @@ var Engine = /** @class */ (function () {
                 console.log("killed");
                 return;
             }
+        }
+        if (this.ball.posY <= 0) {
+            this.ball.posY = 0;
+            this.ball.velY = this.ball.velY * -0.7;
         }
         if (this.ball.posX + this.ball.width > this.world.width) {
             this.ball.velX = this.ball.velX * -1;

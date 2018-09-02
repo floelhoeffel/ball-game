@@ -61,6 +61,11 @@ export class Engine {
       }
     }
 
+    if (this.ball.posY <= 0) {
+      this.ball.posY = 0
+      this.ball.velY = this.ball.velY * -0.7
+    }
+
     if (this.ball.posX + this.ball.width > this.world.width) {
       this.ball.velX = this.ball.velX * -1
     }

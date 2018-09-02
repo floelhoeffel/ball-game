@@ -5,7 +5,7 @@ export class Ball {
   height: number
 
   velX: number = -1 + Math.random() * 2
-  velY: number = 0
+  velY: number = -2 + Math.random() * 4
 
   posX: number
   posY: number
@@ -30,8 +30,6 @@ export class Ball {
       "translateY(" + this.posY + "px) translateX(" + this.posX + "px)"
   }
 }
-
-
 
 //ballElement.style.transform = "translate(50%, 20%)"
 
